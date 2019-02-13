@@ -368,6 +368,34 @@ class Data_Management(_API):
                 '/vmware/vm/snapshot/{}/mount'.format(snapshot_id),
                 config, timeout)
 
+    def new_NasShare(self, hostID, shareType, exportPoint, fileshareusername="blank", filesharepassword="blank", domain="blank", timeout=15):
+        """Creates a Nas Share for a specified host. Later version will include finding the host ID.
+
+        Arguments:
+              "hostID": "string",
+              "shareType": "NFS,SMB",
+              "exportPoint": "string",
+              "username": "string",
+              "password": "string",
+              "domain": "string"
+
+        Returns:
+            dict -- The full response of `POST /internal/host/share`.
+        """
+        config = {}
+        config['hostId'] = hostID
+        config['shareType'] = shareType
+        config['exportPoint'] = exportPoint
+        if filesharepassword != "blank":
+            config['password'] = filesharepassword
+        if domain != "blank":
+            config['domain'] = domain
+        if fileshareusername != "blank":
+            config['username'] = fileshareusername
+        self.log(
+            "Attempting to add a new share to this machine! using config {}".format(config))
+        return self.post('internal', '/host/share', config)
+
     def vsphere_instant_recovery(self, vm_name, date='latest', time='latest', host='current', remove_network_devices=False, power_on=True, disable_network=False, keep_mac_addresses=False, preserve_moid=False, timeout=15):
         """Instantly recover a vSphere VM from a provided snapshot. If a specific date and time is not provided, the last snapshot taken will be used.
 
